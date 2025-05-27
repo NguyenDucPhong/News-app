@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1\Admin;
 
+use App\Http\Helpers\ResponseHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
@@ -15,8 +16,12 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::with('role')->paginate(10);
-        return UserResource::collection($users);
+        try {
+            $users = User::with('role')->paginate(10);
+            return ResponseHelper::success(UserResource::collection($users));
+        }catch (\Exception $exception){
+            return ResponseHelper::error($exception->getMessage());
+        }
     }
 
     /**
